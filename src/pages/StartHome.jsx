@@ -15,7 +15,13 @@ export default function StartHome() {
   useEffect(() => {
     fetch(`https://opentdb.com/api_category.php`)
       .then(res => res.json())
-      .then(data => setAllCategories(data.trivia_categories))
+      .then(data => {
+        setAllCategories(
+          [...data.trivia_categories].sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+          )
+        );
+      })
       .catch(() => document.getElementById("message").textContent = `An error occured fecthing the category data. Please try again later.`)
   }, [])
 
@@ -37,7 +43,7 @@ export default function StartHome() {
       navigate('/quiz', { state: { category: chosenCategory, difficulty: chosenDifficulty } })
     }
   }
-  
+
   return (
     <div>
       {/* Provide a header to welcome the user and let them know what to do */}
@@ -46,37 +52,37 @@ export default function StartHome() {
 
       {/* Below code from https://mui.com/material-ui/react-select/ to create a dropdown for the category and difficulty */}
       <FormControl sx={{ m: 1, minWidth: 250 }}>
-          <InputLabel id="category-select-label">Category</InputLabel>
-          <Select
-            labelId="category-select-label"
-            id="category-select"
-            value={chosenCategory}
-            label="Category"
-            onChange={handleCategoryChange}
-            style={{textAlign: 'left'}}
-          >
-            {/* Loop through all of the categories and create a MenuItem */}
-            { allCategories ? 
-                allCategories.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
-                )) : null
-            }
-          </Select>
+        <InputLabel id="category-select-label">Category</InputLabel>
+        <Select
+          labelId="category-select-label"
+          id="category-select"
+          value={chosenCategory}
+          label="Category"
+          onChange={handleCategoryChange}
+          style={{ textAlign: 'left' }}
+        >
+          {/* Loop through all of the categories and create a MenuItem */}
+          {allCategories ?
+            allCategories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
+            )) : null
+          }
+        </Select>
       </FormControl>
       <FormControl sx={{ m: 1, minWidth: 250 }}>
-          <InputLabel id="difficulty-select-label">Difficulty</InputLabel>
-          <Select
-            labelId="difficulty-select-label"
-            id="difficulty-select"
-            value={chosenDifficulty}
-            label="Difficulty"
-            onChange={handleDifficultyChange}
-            style={{textAlign: 'left'}}
-          >
-            <MenuItem key='Easy' value='easy'>Easy</MenuItem>
-            <MenuItem key='Medium' value='medium'>Medium</MenuItem>
-            <MenuItem key='Hard' value='hard'>Hard</MenuItem>
-          </Select>
+        <InputLabel id="difficulty-select-label">Difficulty</InputLabel>
+        <Select
+          labelId="difficulty-select-label"
+          id="difficulty-select"
+          value={chosenDifficulty}
+          label="Difficulty"
+          onChange={handleDifficultyChange}
+          style={{ textAlign: 'left' }}
+        >
+          <MenuItem key='Easy' value='easy'>Easy</MenuItem>
+          <MenuItem key='Medium' value='medium'>Medium</MenuItem>
+          <MenuItem key='Hard' value='hard'>Hard</MenuItem>
+        </Select>
       </FormControl>
       <br />
       <br />
